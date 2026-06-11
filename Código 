@@ -1,0 +1,100 @@
+using System;
+
+namespace EvolucionAcademica
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Clear();
+            Console.WriteLine("--- SISTEMA DE EVALUACION ACADEMICA v2.0 ---");
+
+            // 1. Entrada y validacion de datos basicos
+            Console.Write("Ingrese el nombre del estudiante: ");
+            string nombre = Console.ReadLine();
+
+            string ci = LeerCarnet("Ingrese el CI del estudiante: ");
+            double promedioOriginal = LeerNota("Ingrese el promedio original (0-100): ");
+
+            // 2. Calculo del bono academico (Requerimiento 1)
+            // Saca los ultimos 2 caracteres del carnet
+            string ultimosDos = ci.Substring(ci.Length - 2);
+            int numeroBono = int.Parse(ultimosDos);
+            
+            double bono = numeroBono * 0.07;
+            double promedioFinal = promedioOriginal + bono;
+
+            // Asegurar que el promedio final no pase de 100 por si acaso
+            if (promedioFinal > 100)
+            {
+                promedioFinal = 100;
+            }
+
+            // 3. Clasificacion de rendimiento (Requerimiento 2)
+            string clasificacion = "";
+
+            if (promedioFinal >= 90 && promedioFinal <= 100)
+            {
+                clasificacion = "Excelente";
+            }
+            else if (promedioFinal >= 70 && promedioFinal < 90)
+            {
+                clasificacion = "Bueno";
+            }
+            else if (promedioFinal >= 51 && promedioFinal < 70)
+            {
+                clasificacion = "Regular";
+            }
+            else
+            {
+                clasificacion = "Observado";
+            }
+
+            // 4. Mostrar Resultados (Requerimiento 3)
+            Console.WriteLine("\n=========================================");
+            Console.WriteLine("          REPORTE DE RENDIMIENTO         ");
+            Console.WriteLine("=========================================");
+            Console.WriteLine($"Estudiante: {nombre}");
+            Console.WriteLine($"CI: {ci} (Digitos tomados: {ultimosDos})");
+            Console.WriteLine($"Promedio Original: {promedioOriginal:F2} pts");
+            Console.WriteLine($"Bono Calculado (7%): {bono:F2} pts");
+            Console.WriteLine($"Promedio Final: {promedioFinal:F2} pts");
+            Console.WriteLine($"Clasificacion: {clasificacion}");
+            Console.WriteLine("=========================================");
+
+            Console.WriteLine("\nProceso terminado. Presione una tecla para salir.");
+            Console.ReadKey();
+        }
+
+        // Metodo para validar que el carnet tenga al menos 2 digitos para no romper el Substring
+        static string LeerCarnet(string mensaje)
+        {
+            while (true)
+            {
+                Console.Write(mensaje);
+                string entrada = Console.ReadLine();
+                if (!string.IsNullOrEmpty(entrada) && entrada.Length >= 2)
+                {
+                    return entrada;
+                }
+                Console.WriteLine("Error: El carnet debe tener al menos 2 digitos.");
+            }
+        }
+
+        // Metodo para validar que la nota sea un numero real entre 0 y 100
+        static double LeerNota(string mensaje)
+        {
+            double nota;
+            while (true)
+            {
+                Console.Write(mensaje);
+                string entrada = Console.ReadLine();
+                if (double.TryParse(entrada, out nota) && nota >= 0 && nota <= 100)
+                {
+                    return nota;
+                }
+                Console.WriteLine("Error: Ingrese una nota valida entre 0 y 100.");
+            }
+        }
+    }
+}
